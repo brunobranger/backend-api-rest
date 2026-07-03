@@ -74,11 +74,12 @@ npm run dev
 
 ### Autenticación
 
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| POST | `/auth/login` | Inicia sesión y devuelve un Bearer Token | No |
+| Método | Ruta          | Descripción                              | Auth |
+| ------ | ------------- | ---------------------------------------- | ---- |
+| POST   | `/auth/login` | Inicia sesión y devuelve un Bearer Token | No   |
 
 **Body esperado:**
+
 ```json
 {
   "email": "usuario@email.com",
@@ -87,6 +88,7 @@ npm run dev
 ```
 
 **Respuesta exitosa:**
+
 ```json
 {
   "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -97,14 +99,15 @@ npm run dev
 
 ### Productos
 
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
-| GET | `/api/products` | Obtiene todos los productos | No |
-| GET | `/api/products/:id` | Obtiene un producto por ID | No |
-| POST | `/api/products/create` | Crea un nuevo producto | Sí |
-| DELETE | `/api/products/:id` | Elimina un producto | Sí |
+| Método | Ruta                   | Descripción                 | Auth |
+| ------ | ---------------------- | --------------------------- | ---- |
+| GET    | `/api/products`        | Obtiene todos los productos | No   |
+| GET    | `/api/products/:id`    | Obtiene un producto por ID  | No   |
+| POST   | `/api/products/create` | Crea un nuevo producto      | Sí   |
+| DELETE | `/api/products/:id`    | Elimina un producto         | Sí   |
 
 **Body para crear producto:**
+
 ```json
 {
   "name": "Nombre del producto",
@@ -126,29 +129,87 @@ Authorization: Bearer <token>
 ## Colecciones en Firestore
 
 ### `products`
-| Campo | Tipo |
-|-------|------|
-| name | string |
-| price | number |
-| category | string |
-| stock | number |
+
+| Campo       | Tipo   |
+| ----------- | ------ |
+| name        | string |
+| price       | number |
+| category    | string |
+| stock       | number |
 | description | string |
 
 ### `users`
-| Campo | Tipo |
-|-------|------|
-| name | string |
-| email | string |
+
+| Campo    | Tipo                         |
+| -------- | ---------------------------- |
+| name     | string                       |
+| email    | string                       |
 | password | string (hasheado con bcrypt) |
+
+## Deploy
+
+La API está desplegada en **Render** y conectada a **Firebase Firestore** en la nube. No requiere configuración adicional para ser probada.
+
+**URL base:** `https://backend-api-rest-tt.onrender.com`
+
+### Probar la API
+
+Se puede testear con Thunder Client (extensión de VS Code), Postman o curl.
+
+**1. Login — obtener el token:**
+
+```json
+POST https://backend-api-rest-tt.onrender.com/auth/login
+
+Body:
+{
+  "email": "jepafe@talentotech.com",
+  "password": "123456"
+}
+```
+
+Respuesta:
+
+```json
+{
+  "token": "Bearer eyJ..."
+}
+```
+
+**2. Usar el token en rutas protegidas:**
+
+Copiar el token completo (incluyendo `Bearer`) y agregarlo en el header:
+
+```
+Authorization: Bearer eyJ...
+```
+
+**3. Ejemplo — crear un producto:**
+
+```
+POST https://backend-api-rest-tt.onrender.com/api/products/create
+
+Headers:
+  Authorization: Bearer eyJ...
+
+Body:
+{
+  "name": "Producto Test",
+  "price": 999,
+  "category": "Electrónica",
+  "stock": 10,
+  "description": "Descripción del producto"
+}
+```
 
 ## Códigos de respuesta
 
-| Código | Descripción |
-|--------|-------------|
-| 200 | OK |
-| 201 | Recurso creado |
-| 400 | Campos faltantes o inválidos |
-| 401 | Token no proporcionado |
-| 403 | Token inválido o expirado |
-| 404 | Recurso o ruta no encontrada |
-| 500 | Error interno del servidor |
+| Código | Descripción                  |
+| ------ | ---------------------------- |
+| 200    | OK                           |
+| 201    | Recurso creado               |
+| 400    | Campos faltantes o inválidos |
+| 401    | Token no proporcionado       |
+| 403    | Token inválido o expirado    |
+| 404    | Recurso o ruta no encontrada |
+| 500    | Error interno del servidor   |
